@@ -31,35 +31,14 @@ def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb
     if model_dir is not None:
         save_dir = model_dir
     else:
-        save_dir = os.path.join(MODELS_DIR, "ToucanTTS_German_and_English")  # RENAME TO SOMETHING MEANINGFUL FOR YOUR DATA
+        save_dir = os.path.join(MODELS_DIR, "CrewChief_Jim")  # RENAME TO SOMETHING MEANINGFUL FOR YOUR DATA
     os.makedirs(save_dir, exist_ok=True)
 
     all_train_sets = list()  # YOU CAN HAVE MULTIPLE LANGUAGES, OR JUST ONE. JUST MAKE ONE ConcatDataset PER LANGUAGE AND ADD IT TO THE LIST.
 
-    # =======================
-    # =    German Data      =
-    # =======================
-    german_datasets = list()
-    german_datasets.append(prepare_fastspeech_corpus(transcript_dict=build_path_to_transcript_dict_karlsson(),
-                                                     corpus_dir=os.path.join(PREPROCESSING_DIR, "Karlsson"),
-                                                     lang="de"))  # CHANGE THE TRANSCRIPT DICT, THE NAME OF THE CACHE DIRECTORY AND THE LANGUAGE TO YOUR NEEDS
-
-    german_datasets.append(prepare_fastspeech_corpus(transcript_dict=build_path_to_transcript_dict_eva(),
-                                                     corpus_dir=os.path.join(PREPROCESSING_DIR, "Eva"),
-                                                     lang="de"))  # YOU CAN SIMPLY ADD MODE CORPORA AND DO THE SAME, BUT YOU DON'T HAVE TO, ONE IS ENOUGH
-
-    all_train_sets.append(ConcatDataset(german_datasets))
-
-    # ========================
-    # =    English Data      =
-    # ========================
     english_datasets = list()
-    english_datasets.append(prepare_fastspeech_corpus(transcript_dict=build_path_to_transcript_dict_nancy(),
-                                                      corpus_dir=os.path.join(PREPROCESSING_DIR, "Nancy"),
-                                                      lang="en"))
-
-    english_datasets.append(prepare_fastspeech_corpus(transcript_dict=build_path_to_transcript_dict_ljspeech(),
-                                                      corpus_dir=os.path.join(PREPROCESSING_DIR, "LJSpeech"),
+    english_datasets.append(prepare_fastspeech_corpus(transcript_dict=build_path_to_transcript_dict_generic_ljspeech("../CrewChiefV4/CrewChiefV4/sounds/"),
+                                                      corpus_dir=os.path.join(PREPROCESSING_DIR, "Jim"),
                                                       lang="en"))
 
     all_train_sets.append(ConcatDataset(english_datasets))
