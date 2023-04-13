@@ -257,9 +257,7 @@ def build_path_to_transcript_dict_generic_ljspeech(root):
     for line in lookup.split("\n"):
         if line.strip() != "":
             norm_transcript = line.split("|")[1]
-            print(norm_transcript)
             wav_path = os.path.join(root, "wavs", line.split("|")[0] + ".wav")
-            print(wav_path)
             if os.path.exists(wav_path):
                 path_to_transcript[wav_path] = norm_transcript
     return limit_to_n(path_to_transcript)
