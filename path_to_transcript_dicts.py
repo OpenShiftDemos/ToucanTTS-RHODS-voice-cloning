@@ -249,7 +249,8 @@ def build_path_to_transcript_dict_libritts_other500():
 
 def build_path_to_transcript_dict_generic_ljspeech(root):
     """This method will take a root path as an argument and will look specifically for an LJSpeech-style
-       metadata.csv file in that location
+       metadata.csv file in that location. It expects the first column of the CSV to have the complete
+       relative path to the wav file, and expects a pipe (|) as the delimeter
     """
     path_to_transcript = dict()
     with open(os.path.join(root, "metadata.csv"), "r", encoding="utf8") as file:
@@ -257,7 +258,7 @@ def build_path_to_transcript_dict_generic_ljspeech(root):
     for line in lookup.split("\n"):
         if line.strip() != "":
             norm_transcript = line.split("|")[1]
-            wav_path = os.path.join(root, "wavs", line.split("|")[0] + ".wav")
+            wav_path = os.path.join(root, line.split("|")[0] + ".wav")
             if os.path.exists(wav_path):
                 path_to_transcript[wav_path] = norm_transcript
     return limit_to_n(path_to_transcript)
