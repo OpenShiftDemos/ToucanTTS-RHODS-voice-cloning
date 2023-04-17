@@ -18,5 +18,11 @@ sed -i 's/\.wav//' metadata.csv
 # remove the quotation marks originally present in the subtitle.csv
 sed -i 's/"//g' metadata.csv
 
+# remove the spotters
+sed -i '/spotter/d' metadata.csv
+
+# remove Janne
+sed -i '/Janne/d' metadata.csv
+
 # remove blank lines
 sed -i '/^\s*$/d' metadata.csv
