@@ -5,41 +5,29 @@ import sys
 
 import torch
 
-from TrainingInterfaces.TrainingPipelines.Avocodo_combined import run as hifi_codo
-from TrainingInterfaces.TrainingPipelines.BigVGAN_combined import run as bigvgan
-from TrainingInterfaces.TrainingPipelines.FastSpeech2Embedding_IntegrationTest import run as fs_integration_test
-from TrainingInterfaces.TrainingPipelines.GST_FastSpeech2 import run as embedding
-from TrainingInterfaces.TrainingPipelines.StochasticToucanTTS_Nancy import run as nancystoch
-from TrainingInterfaces.TrainingPipelines.ToucanTTS_IntegrationTest import run as tt_integration_test
-from TrainingInterfaces.TrainingPipelines.ToucanTTS_MetaCheckpoint import run as meta
-from TrainingInterfaces.TrainingPipelines.ToucanTTS_Nancy import run as nancy
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_IntegrationTest import run as fs_integration_test
+from TrainingInterfaces.TrainingPipelines.HiFiGAN_Avocodo import run as hifi_codo
+from TrainingInterfaces.TrainingPipelines.JointEmbeddingFunction import run as embedding
+from TrainingInterfaces.TrainingPipelines.PortaSpeech_IntegrationTest import run as ps_integration_test
+from TrainingInterfaces.TrainingPipelines.PortaSpeech_MetaCheckpoint import run as meta
 from TrainingInterfaces.TrainingPipelines.finetuning_example import run as fine_tuning_example
-from TrainingInterfaces.TrainingPipelines.finetune_crewchief import run as crewchief_jim
 from TrainingInterfaces.TrainingPipelines.pretrain_aligner import run as aligner
+from TrainingInterfaces.TrainingPipelines.finetune_crewchief import run as crewchief_jim
 
 pipeline_dict = {
-    # the finetuning example
-    "fine_ex"   : fine_tuning_example,
+    "meta"     : meta,
+    "embedding": embedding,
+    "hifi_codo": hifi_codo,
+    "aligner"  : aligner,
+    "fine_ex"  : fine_tuning_example,
     "crewchief_jim"   : crewchief_jim,
-    # integration tests
-    "fs_it"     : fs_integration_test,
-    "tt_it"     : tt_integration_test,
-    # regular ToucanTTS pipelines
-    "nancy"     : nancy,
-    "nancystoch": nancystoch,
-    "meta"      : meta,
-    # training vocoders (not recommended, best to use provided checkpoint)
-    "avocodo"   : hifi_codo,
-    "bigvgan"   : bigvgan,
-    # training the GST embedding jointly with FastSpeech 2 on expressive data (not recommended, best to use provided checkpoint)
-    "embedding" : embedding,
-    # training the aligner from scratch (not recommended, best to use provided checkpoint)
-    "aligner"   : aligner,
+    "fs_it"    : fs_integration_test,
+    "ps_it"    : ps_integration_test,
 }
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(description='Training with the IMS Toucan Speech Synthesis Toolkit')
+    parser = argparse.ArgumentParser(description='IMS Speech Synthesis Toolkit - Call to Train')
 
     parser.add_argument('pipeline',
                         choices=list(pipeline_dict.keys()),
@@ -72,7 +60,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--wandb',
                         action="store_true",
-                        help="Whether to use weights and biases to track training runs. Requires you to run wandb login and place your auth key before.",
+                        help="Whether to use weigths and biases to track training runs. Requires you to run wandb login and place your auth key before.",
                         default=False)
 
     parser.add_argument('--wandb_resume_id',
@@ -85,21 +73,6 @@ if __name__ == '__main__':
     if args.finetune and args.resume_checkpoint is None and not args.resume:
         print("Need to provide path to checkpoint to fine-tune from!")
         sys.exit()
-
-    if args.gpu_id == "cpu":
-        os.environ["CUDA_VISIBLE_DEVICES"] = ""
-        device = torch.device("cpu")
-        print(f"No GPU specified, using CPU. Training will likely not work without GPU.")
-
-    else:
-        os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-        os.environ["CUDA_VISIBLE_DEVICES"] = f"{args.gpu_id}"
-        device = torch.device("cuda")
-        print(f"Making GPU {os.environ['CUDA_VISIBLE_DEVICES']} the only visible device.")
-
-    torch.manual_seed(131714)
-    random.seed(131714)
-    torch.random.manual_seed(131714)
 
     pipeline_dict[args.pipeline](gpu_id=args.gpu_id,
                                  resume_checkpoint=args.resume_checkpoint,
