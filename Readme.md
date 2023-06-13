@@ -146,8 +146,14 @@ Then, execute the metadata generator script:
 
      bash ~/ToucanTTS-RHODS-voice-cloning/metadata-generator.sh
 
-**Note**: The metadata generator script will not produce any output. However,
-you can verify that it produced the desired output with the following command:
+**Note**: You may see an error like:
+
+    rm: cannot remove 'metadata.csv': No such file or directory
+
+This is OK. It is because the script is trying to remove any previous instance
+of the metadata file before it generates it freshly. The metadata generator
+script will not produce any output. However, you can verify that it produced the
+desired output with the following command:
 
     tail metadata.csv
 
@@ -192,7 +198,7 @@ be backported to v2.4.
 You can apply the patch as follows:
 
     cd ~/IMS-Toucan
-    git apply ../worker-device.patch
+    git apply ~/ToucanTTS-RHODS-voice-cloning/worker-device.patch
 
 ## Run the Training
 Once you have downloaded the models, you can run the training:
