@@ -30,14 +30,14 @@ names (used for personalization), I decided to attempt to clone Jim's voice in
 order to be able to generate additional audio content.
 
 **WARNING AND ACKNOWLEDGEMENT**
-There are serious ethical considerations that come with the use of generative
-AI technologies. Deep-fakes, misinformation, and other challenges abound. This
+There are serious ethical considerations that come with the use of generative AI
+technologies. Deep-fakes, misinformation, and other challenges abound. This
 content is not presented as an endorsement of any nefarious uses of generative
-AI. It is an experiment with the capabilities of the technology and was done
-with permission of the voice's owner, Jim.
+AI. It is an experiment with the capabilities of a specific technology and was
+done with permission of the voice's owner, Jim.
 
 ## Getting Started with Red Hat OpenShift Data Science
-We have an instance of Red Hat OpenShift Data Science or RHODS that was used for
+We have an instance of Red Hat OpenShift Data Science (RHODS) that was used for
 these experiments. RHODS runs on top of OpenShift. The OpenShift environment
 where RHODS is running is configured to allow auto-scaling of the cluster when
 GPUs are requested.
@@ -181,6 +181,12 @@ requirements. This helps to guarantee a known state.
     pip install -r requirements.txt
     # deal with https://github.com/DigitalPhonetics/IMS-Toucan/issues/138
     pip install torch torchvision torchaudio
+
+**NOTE:** In certain situations (including this one), pytorch can attempt to use
+*more shared memory
+than is available to it, causing a crash. Please see the following (release
+notes)[https://access.redhat.com/documentation/en-us/red_hat_openshift_data_science/1/html-single/release_notes/index#known-issues_relnotes]
+for RHODS regarding how to configure additional shared memory for your notebook.
 
 ## Download the Base Models
 IMS-Toucan has pre-trained models that you will use to fine-tune. Make sure to download them:
